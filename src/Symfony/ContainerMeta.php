@@ -90,7 +90,7 @@ class ContainerMeta
 
         $containerXmlPath = null;
         foreach ($containerXmlPaths as $filePath) {
-            $containerXmlPath = realpath((string) $filePath);
+            $containerXmlPath = realpath(trim((string) $filePath));
             if ($containerXmlPath) {
                 break;
             }
