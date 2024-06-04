@@ -132,7 +132,10 @@ class ContainerMeta
         }
     }
 
-    private function addServiceLocator(string $key, string $id, Reference $reference): void
+    /**
+     * @param array-key $id
+     */
+    private function addServiceLocator(string $key, mixed $id, Reference $reference): void
     {
         $this->serviceLocators[$key][$id] = (string) $reference;
 
