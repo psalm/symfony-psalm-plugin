@@ -23,7 +23,6 @@
         "symfony/cache-contracts": "^1.0 || ^2.0",
         "symfony/console": "*",
         "symfony/messenger": "^5.0 || ^6.0 || ^7.0",
-        "symfony/security-guard": "*",
         "symfony/serializer": "^5.0 || ^6.0 || ^7.0",
         "symfony/validator": "*",
         "twig/twig": "^2.10 || ^3.0",
