@@ -44,9 +44,9 @@ class ContainerMeta
     /**
      * @throws ServiceNotFoundException
      */
-    public function get(string $id, string $contextClass = null): Definition
+    public function get(string $id, ?string $contextClass = null): Definition
     {
-        if ($contextClass && isset($this->classLocators[$contextClass]) && isset($this->serviceLocators[$this->classLocators[$contextClass]]) && isset($this->serviceLocators[$this->classLocators[$contextClass]][$id])) {
+        if (null !== $contextClass && isset($this->classLocators[$contextClass]) && isset($this->serviceLocators[$this->classLocators[$contextClass]]) && isset($this->serviceLocators[$this->classLocators[$contextClass]][$id])) {
             $id = $this->serviceLocators[$this->classLocators[$contextClass]][$id];
 
             try {
@@ -91,12 +91,12 @@ class ContainerMeta
         $containerXmlPath = null;
         foreach ($containerXmlPaths as $filePath) {
             $containerXmlPath = realpath((string) $filePath);
-            if ($containerXmlPath) {
+            if (false !== $containerXmlPath) {
                 break;
             }
         }
 
-        if (!$containerXmlPath) {
+        if (!is_string($containerXmlPath)) {
             throw new ConfigException('Container xml file(s) not found!');
         }
 
@@ -117,8 +117,7 @@ class ContainerMeta
         }
 
         foreach ($this->container->findTaggedServiceIds('container.service_locator') as $key => $_) {
-            $definition = $this->container->getDefinition($key);
-            foreach ($definition->getArgument(0) as $id => $argument) {
+            foreach ($this->container->getDefinition($key)->getArgument(0) as $id => $argument) {
                 if ($argument instanceof Reference) {
                     $this->addServiceLocator($key, $id, $argument);
                 } elseif ($argument instanceof ServiceClosureArgument) {
