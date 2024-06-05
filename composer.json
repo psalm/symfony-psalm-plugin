@@ -16,13 +16,14 @@
         "vimeo/psalm": "^5.24"
     },
     "require-dev": {
-        "symfony/form": "^5.0 || ^6.0 || ^7.0",
         "doctrine/annotations": "^1.8|^2",
         "doctrine/orm": "^2.9",
         "phpunit/phpunit": "~7.5 || ~9.5",
         "symfony/cache-contracts": "^1.0 || ^2.0",
         "symfony/console": "*",
+        "symfony/form": "^5.0 || ^6.0 || ^7.0",
         "symfony/messenger": "^5.0 || ^6.0 || ^7.0",
+        "symfony/security-core": "*",
         "symfony/serializer": "^5.0 || ^6.0 || ^7.0",
         "symfony/validator": "*",
         "twig/twig": "^2.10 || ^3.0",
