@@ -46,7 +46,7 @@
     <service id="dummy_private_service" class="Psalm\SymfonyPsalmPlugin\Tests\Fixture\DummyPrivateService" public="false"/>
     <service id="public_service_wo_public_attr" class="Foo\Bar"/>
     <service id="wronglyNamedService" class="Foo\Bar" public="true" />
-    <!-- service subscriber 1 example -->
+    <!-- service locator example 1 -->
     <service id="App\Controller\DummyController" class="App\Controller\DummyController">
       <tag name="container.service_subscriber"/>
       <argument type="service" id=".service_locator.123xyz.App\Controller\DummyController"/>
@@ -66,7 +66,7 @@
       <argument type="service" id="service_container"/>
       <factory service=".service_locator.123xyz" method="withContext"/>
     </service>
-    <!-- service subscriber 2 example -->
+    <!-- service locator example 2 -->
     <service id="service_subscriber_2" class="App\SomeClass" autowire="true" autoconfigure="true">
       <tag name="container.service_subscriber"/>
       <argument type="service" id=".service_locator.456xyz.service_subscriber_2"/>
@@ -86,6 +86,13 @@
         <argument key="validator" type="service" id="debug.validator"/>
         <argument key="1234" type="service" id="Psalm\SymfonyPsalmPlugin\Tests\Fixture\DummyPrivateService"/>
       </argument>
+    </service>
+    <!-- service locator example 3 -->
+    <service id=".service_locator.890xyz.kernel::registerContainerConfiguration()" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator_context" id="kernel::registerContainerConfiguration()"/>
+      <argument>kernel::registerContainerConfiguration()</argument>
+      <argument type="service" id="service_container"/>
+      <factory service=".service_locator.890xyz" method="withContext"/>
     </service>
   </services>
 </container>
