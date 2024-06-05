@@ -11,7 +11,7 @@ interface PropertyAccessorInterface
      * @psalm-param mixed $value
      * @psalm-param-out T $objectOrArray
      */
-    public function setValue(&$objectOrArray, $propertyPath, $value);
+    public function setValue(object|array &$objectOrArray, string|PropertyPathInterface $propertyPath, mixed $value);
 
     /**
      * @param object|array $objectOrArray
@@ -19,7 +19,7 @@ interface PropertyAccessorInterface
      *
      * @return mixed
      */
-    public function getValue($objectOrArray, $propertyPath);
+    public function getValue(object|array $objectOrArray, string|PropertyPathInterface $propertyPath): mixed;
 
     /**
      * @param object|array $objectOrArray
@@ -27,7 +27,7 @@ interface PropertyAccessorInterface
      *
      * @return bool
      */
-    public function isWritable($objectOrArray, $propertyPath);
+    public function isWritable(object|array $objectOrArray, string|PropertyPathInterface $propertyPath): bool;
 
     /**
      * @param object|array $objectOrArray
@@ -35,5 +35,5 @@ interface PropertyAccessorInterface
      *
      * @return bool
      */
-    public function isReadable($objectOrArray, $propertyPath);
+    public function isReadable(object|array $objectOrArray, string|PropertyPathInterface $propertyPath): bool;
 }

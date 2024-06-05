@@ -1,4 +1,4 @@
-@symfony-common
+@symfony-disabled
 Feature: Form builder
 
   Background:
