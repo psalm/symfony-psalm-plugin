@@ -7,19 +7,21 @@ Feature: Container XML config
       """
       <containerXml>../../tests/acceptance/container.xml</containerXml>
       """
+    And I have the following code preamble
+      """
+      <?php
+
+      use \Symfony\Component\DependencyInjection\ContainerInterface;
+      """
 
   Scenario: Asserting psalm recognizes return type of service got via 'ContainerInterface::get() using service ID'
     Given I have the following code
       """
-      <?php
-
-      class SomeController
+      class App
       {
-        use \Symfony\Component\DependencyInjection\ContainerAwareTrait;
-
-        public function index(): bool
+        public function __invoke(ContainerInterface $container): bool
         {
-          return $this->container->get('service_container')->has('lorem');
+          return $container->get('service_container')->has('lorem');
         }
       }
       """
@@ -29,15 +31,11 @@ Feature: Container XML config
   Scenario: Psalm emits when service ID not found in container'
     Given I have the following code
       """
-      <?php
-
-      class SomeController
+      class App
       {
-        use \Symfony\Component\DependencyInjection\ContainerAwareTrait;
-
-        public function index(): void
+        public function __invoke(ContainerInterface $container): void
         {
-          $this->container->get('not_a_service')->has('lorem');
+          $container->get('not_a_service')->has('lorem');
         }
       }
       """
@@ -49,18 +47,12 @@ Feature: Container XML config
   Scenario: Using service both via alias and class const
     Given I have the following code
       """
-      <?php
-
-      use Symfony\Component\HttpKernel\HttpKernelInterface;
-
-      class SomeController
+      class App
       {
-        use \Symfony\Component\DependencyInjection\ContainerAwareTrait;
-
-        public function index(): void
+        public function __invoke(ContainerInterface $container): void
         {
-          $this->container->get('http_kernel');
-          $this->container->get(HttpKernelInterface::class);
+          $container->get('http_kernel');
+          $container->get(HttpKernelInterface::class);
         }
       }
       """
@@ -70,15 +62,11 @@ Feature: Container XML config
   Scenario: Using private service
     Given I have the following code
       """
-      <?php
-
-      class SomeController
+      class App
       {
-        use \Symfony\Component\DependencyInjection\ContainerAwareTrait;
-
-        public function index(): void
+        public function __invoke(ContainerInterface $container): void
         {
-          $this->container->get('private_service');
+          $container->get('private_service');
         }
       }
       """

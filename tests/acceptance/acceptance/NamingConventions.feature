@@ -7,19 +7,22 @@ Feature: Naming conventions
       """
       <containerXml>../../tests/acceptance/container.xml</containerXml>
       """
+    And I have the following code preamble
+      """
+      <?php
+
+      use \Symfony\Component\DependencyInjection\ContainerInterface;
+      use \Symfony\Component\HttpKernel\HttpKernelInterface;
+      """
 
   Scenario: There is no service naming convention violation, so no complaint.
     Given I have the following code
       """
-      <?php
-
-      class SomeController
+      class App
       {
-        use \Symfony\Component\DependencyInjection\ContainerAwareTrait;
-
-        public function index(): bool
+        public function __invoke(ContainerInterface $container): bool
         {
-          return $this->container->get('service_container')->has('lorem');
+          return $container->get('service_container')->has('lorem');
         }
       }
       """
@@ -29,15 +32,11 @@ Feature: Naming conventions
   Scenario: Detects service naming convention violation
     Given I have the following code
       """
-      <?php
-
-      class SomeController
+      class App
       {
-        use \Symfony\Component\DependencyInjection\ContainerAwareTrait;
-
-        public function index(): void
+        public function __invoke(ContainerInterface $container): void
         {
-          $this->container->get('wronglyNamedService');
+          $container->get('wronglyNamedService');
         }
       }
       """
@@ -50,17 +49,11 @@ Feature: Naming conventions
   Scenario: No service naming convention violation when using FQCNs
     Given I have the following code
       """
-      <?php
-
-      use Symfony\Component\HttpKernel\HttpKernelInterface;
-
-      class SomeController
+      class App
       {
-        use \Symfony\Component\DependencyInjection\ContainerAwareTrait;
-
-        public function __invoke(): void
+        public function __invoke(ContainerInterface $container): void
         {
-          $this->container->get(HttpKernelInterface::class);
+          $container->get(HttpKernelInterface::class);
         }
       }
       """
@@ -70,15 +63,11 @@ Feature: Naming conventions
   Scenario: No naming convention violation for parameter
     Given I have the following code
       """
-      <?php
-
-      class SomeController
+      class App
       {
-        use \Symfony\Component\DependencyInjection\ContainerAwareTrait;
-
-        public function index(): void
+        public function __invoke(ContainerInterface $container): void
         {
-          $this->container->getParameter('kernel.cache_dir');
+          $container->getParameter('kernel.cache_dir');
         }
       }
       """
@@ -88,15 +77,11 @@ Feature: Naming conventions
   Scenario: Detects parameter naming convention violation
     Given I have the following code
       """
-      <?php
-
-      class SomeController
+      class App
       {
-        use \Symfony\Component\DependencyInjection\ContainerAwareTrait;
-
-        public function index(): void
+        public function __invoke(ContainerInterface $container): void
         {
-          $this->container->getParameter('wronglyNamedParameter');
+          $container->getParameter('wronglyNamedParameter');
         }
       }
       """
@@ -109,15 +94,11 @@ Feature: Naming conventions
   Scenario: No parameter naming convention violation when using environment variables
     Given I have the following code
       """
-      <?php
-
-      class SomeController
+      class App
       {
-        use \Symfony\Component\DependencyInjection\ContainerAwareTrait;
-
-        public function __invoke(): void
+        public function __invoke(ContainerInterface $container): void
         {
-          $this->container->getParameter('env(SOME_ENV_VAR)');
+          $container->getParameter('env(SOME_ENV_VAR)');
         }
       }
       """
