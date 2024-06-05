@@ -57,7 +57,7 @@ class ConsoleHandler implements AfterMethodCallAnalysisInterface
                 break;
             case 'Symfony\Component\Console\Input\InputInterface::getargument':
                 $identifier = self::getNodeIdentifier($args[0]->value);
-                if (!$identifier) {
+                if (null === $identifier) {
                     break;
                 }
 
@@ -70,7 +70,7 @@ class ConsoleHandler implements AfterMethodCallAnalysisInterface
                 break;
             case 'Symfony\Component\Console\Input\InputInterface::getoption':
                 $identifier = self::getNodeIdentifier($args[0]->value);
-                if (!$identifier) {
+                if (null === $identifier) {
                     break;
                 }
 
@@ -126,7 +126,7 @@ class ConsoleHandler implements AfterMethodCallAnalysisInterface
         $normalizedParams = self::normalizeArgumentParams($args);
 
         $identifier = self::getNodeIdentifier($normalizedParams['name']->value);
-        if (!$identifier) {
+        if (null === $identifier) {
             return;
         }
 
@@ -170,7 +170,7 @@ class ConsoleHandler implements AfterMethodCallAnalysisInterface
         $normalizedParams = self::normalizeOptionParams($args);
 
         $identifier = self::getNodeIdentifier($normalizedParams['name']->value);
-        if (!$identifier) {
+        if (null === $identifier) {
             return;
         }
 

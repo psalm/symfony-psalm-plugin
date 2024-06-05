@@ -105,7 +105,7 @@ class ContainerHandler implements AfterMethodCallAnalysisInterface, AfterClassLi
             if ('self' === $className) {
                 $className = $event->getStatementsSource()->getSource()->getFQCLN();
             }
-            if (!$idArgument->name instanceof Identifier || !$className) {
+            if (!$idArgument->name instanceof Identifier || null === $className) {
                 return;
             }
 
@@ -141,7 +141,7 @@ class ContainerHandler implements AfterMethodCallAnalysisInterface, AfterClassLi
             if (!$service->isPublic()) {
                 /** @var class-string $kernelTestCaseClass */
                 $kernelTestCaseClass = 'Symfony\Bundle\FrameworkBundle\Test\KernelTestCase';
-                $isTestContainer = $context->parent
+                $isTestContainer = null !== $context->parent
                     && ($kernelTestCaseClass === $context->parent
                         || is_subclass_of($context->parent, $kernelTestCaseClass)
                     );

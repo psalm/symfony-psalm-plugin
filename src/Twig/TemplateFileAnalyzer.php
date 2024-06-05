@@ -18,15 +18,12 @@ use Twig\NodeTraverser;
  */
 class TemplateFileAnalyzer extends FileAnalyzer
 {
-    /**
-     * @var string
-     */
-    private static $rootPath = 'templates';
+    private static string $rootPath = 'templates';
 
     /**
      * @var list<class-string>
      */
-    private static $extensionClasses = [];
+    private static array $extensionClasses = [];
 
     /**
      * @param list<class-string> $extensionClasses
@@ -37,8 +34,8 @@ class TemplateFileAnalyzer extends FileAnalyzer
     }
 
     public function analyze(
-        PsalmContext $file_context = null,
-        PsalmContext $global_context = null
+        ?PsalmContext $file_context = null,
+        ?PsalmContext $global_context = null
     ): void {
         $codebase = $this->project_analyzer->getCodebase();
         $taint = $codebase->taint_flow_graph;
