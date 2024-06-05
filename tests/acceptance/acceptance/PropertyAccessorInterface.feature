@@ -1,4 +1,4 @@
-@symfony-common
+@symfony-7
 Feature: PropertyAccessorInterface
 
   Background:
