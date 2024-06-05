@@ -12,6 +12,7 @@ Feature: Container XML config
       <?php
 
       use \Symfony\Component\DependencyInjection\ContainerInterface;
+      use \Symfony\Component\HttpKernel\HttpKernelInterface;
       """
 
   Scenario: Asserting psalm recognizes return type of service got via 'ContainerInterface::get() using service ID'
