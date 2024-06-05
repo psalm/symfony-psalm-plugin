@@ -35,10 +35,7 @@ class ContainerHandler implements AfterMethodCallAnalysisInterface, AfterClassLi
         'Symfony\Bundle\FrameworkBundle\Test\TestContainer',
     ];
 
-    /**
-     * @var ContainerMeta|null
-     */
-    private static $containerMeta;
+    private static ?ContainerMeta $containerMeta = null;
 
     /**
      * @var array<string> collection of cower-cased class names that are present in the container
@@ -114,7 +111,7 @@ class ContainerHandler implements AfterMethodCallAnalysisInterface, AfterClassLi
             } else {
                 try {
                     $serviceId = \constant($className.'::'.$idArgument->name->name);
-                } catch (\Exception $e) {
+                } catch (\Exception) {
                     return;
                 }
             }
@@ -133,7 +130,7 @@ class ContainerHandler implements AfterMethodCallAnalysisInterface, AfterClassLi
             }
 
             $class = $service->getClass();
-            if ($class) {
+            if (null !== $class) {
                 $codebase->classlikes->addFullyQualifiedClassName($class);
                 $event->setReturnTypeCandidate(new Union([new TNamedObject($class)]));
             }
@@ -152,7 +149,7 @@ class ContainerHandler implements AfterMethodCallAnalysisInterface, AfterClassLi
                     );
                 }
             }
-        } catch (ServiceNotFoundException $e) {
+        } catch (ServiceNotFoundException) {
             IssueBuffer::accepts(
                 new ServiceNotFound($serviceId, new CodeLocation($statements_source, $firstArg->value)),
                 $statements_source->getSuppressedIssues()
@@ -160,7 +157,7 @@ class ContainerHandler implements AfterMethodCallAnalysisInterface, AfterClassLi
         }
     }
 
-    public static function afterClassLikeVisit(AfterClassLikeVisitEvent $event)
+    public static function afterClassLikeVisit(AfterClassLikeVisitEvent $event): void
     {
         $codebase = $event->getCodebase();
         $statements_source = $event->getStatementsSource();
@@ -221,7 +218,7 @@ class ContainerHandler implements AfterMethodCallAnalysisInterface, AfterClassLi
 
     private static function followsParameterNamingConvention(string $name): bool
     {
-        if (0 === strpos($name, 'env(')) {
+        if (str_starts_with($name, 'env(')) {
             return true;
         }
 

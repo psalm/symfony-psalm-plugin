@@ -19,22 +19,19 @@ class ContainerMeta
     /**
      * @var array<string>
      */
-    private $classNames = [];
+    private array $classNames = [];
 
     /**
      * @var array<string, string>
      */
-    private $classLocators = [];
+    private array $classLocators = [];
 
     /**
      * @var array<string, array<string, string>>
      */
-    private $serviceLocators = [];
+    private array $serviceLocators = [];
 
-    /**
-     * @var ContainerBuilder
-     */
-    private $container;
+    private ContainerBuilder $container;
 
     public function __construct(array $containerXmlPaths)
     {
@@ -67,10 +64,7 @@ class ContainerMeta
         return $definition;
     }
 
-    /**
-     * @return mixed|null
-     */
-    public function getParameter(string $key)
+    public function getParameter(string $key): mixed
     {
         return $this->container->getParameter($key);
     }
@@ -111,7 +105,7 @@ class ContainerMeta
                 $this->classLocators[$this->container->getDefinition($id)->getClass() ?? $id] = (string) $reference;
             } elseif ($definition->hasTag('container.service_locator')) {
                 continue;
-            } elseif ($className = $definition->getClass()) {
+            } elseif (null !== $className = $definition->getClass()) {
                 $this->classNames[] = $className;
             }
         }
@@ -138,10 +132,10 @@ class ContainerMeta
         try {
             $definition = $this->getDefinition((string) $reference);
             $className = $definition->getClass();
-            if ($className) {
+            if (null !== $className) {
                 $this->classNames[] = $className;
             }
-        } catch (ServiceNotFoundException $e) {
+        } catch (ServiceNotFoundException) {
         }
     }
 
@@ -155,7 +149,7 @@ class ContainerMeta
         } catch (ServiceNotFoundException $serviceNotFoundException) {
             try {
                 $alias = $this->container->getAlias($id);
-            } catch (InvalidArgumentException $e) {
+            } catch (InvalidArgumentException) {
                 throw $serviceNotFoundException;
             }
 
