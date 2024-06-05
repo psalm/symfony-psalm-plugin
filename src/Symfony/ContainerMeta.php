@@ -97,14 +97,20 @@ class ContainerMeta
         $xml->load($containerXmlPath);
 
         foreach ($this->container->getDefinitions() as $definition) {
+            if ($definition->hasTag('container.service_locator')) {
+                continue;
+            }
+
             $definitionFactory = $definition->getFactory();
             if ($definition->hasTag('container.service_locator_context') && is_array($definitionFactory)) {
                 /** @var Reference $reference */
                 $reference = $definitionFactory[0];
                 $id = $definition->getTag('container.service_locator_context')[0]['id'];
-                $this->classLocators[$this->container->getDefinition($id)->getClass() ?? $id] = (string) $reference;
-            } elseif ($definition->hasTag('container.service_locator')) {
-                continue;
+                try {
+                    $this->classLocators[$this->container->getDefinition($id)->getClass() ?? $id] = (string) $reference;
+                } catch (ServiceNotFoundException) {
+                    continue;
+                }
             } elseif (null !== $className = $definition->getClass()) {
                 $this->classNames[] = $className;
             }
