@@ -9,7 +9,9 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Argument\ServiceClosureArgument;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\DependencyInjection\EnvVarProcessor;
 use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
+use Symfony\Component\DependencyInjection\Exception\ParameterNotFoundException;
 use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
@@ -67,6 +69,29 @@ class ContainerMeta
     public function getParameter(string $key): mixed
     {
         return $this->container->getParameter($key);
+    }
+
+    /**
+     * @throw ParameterNotFoundException
+     *
+     * @return ?array<string>
+     */
+    public function guessParameterType(string $key): ?array
+    {
+        $parameter = $this->getParameter($key);
+
+        if (is_string($parameter) && str_starts_with($parameter, '%env(')) {
+            return $this->envParameterType($parameter);
+        }
+
+        return match (gettype($parameter)) {
+            'string' => ['string'],
+            'boolean' => ['bool'],
+            'integer' => ['int'],
+            'double' => ['float'],
+            'array' => ['array'],
+            default => null,
+        };
     }
 
     /**
@@ -167,5 +192,18 @@ class ContainerMeta
         }
 
         return $definition;
+    }
+
+    private function envParameterType(string $envParameter): ?array
+    {
+        // extract bool from %env(bool:ENV_PARAM)%, string from %env(string:ENV_PARAM)%
+        $type = preg_match('/^%env\((\w+):/', $envParameter, $matches) ? $matches[1] : null;
+
+        $envVarTypes = EnvVarProcessor::getProvidedTypes();
+        if (!isset($envVarTypes[$type])) {
+            return null;
+        }
+
+        return explode('|', $envVarTypes[$type]);
     }
 }

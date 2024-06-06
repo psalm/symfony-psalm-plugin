@@ -42,30 +42,18 @@ class ParameterBagHandler implements AfterMethodCallAnalysisInterface
         }
 
         $argument = $expr->args[0]->value->value;
+
         try {
-            $parameter = self::$containerMeta->getParameter($argument);
-        } catch (ParameterNotFoundException $e) {
+            $parameterTypes = self::$containerMeta->guessParameterType($argument);
+        } catch (ParameterNotFoundException) {
             // maybe emit ParameterNotFound issue
             return;
         }
 
-        // @todo find a better way to calculate return type
-        switch (gettype($parameter)) {
-            case 'string':
-                $event->setReturnTypeCandidate(new Union([Atomic::create('string')]));
-                break;
-            case 'boolean':
-                $event->setReturnTypeCandidate(new Union([Atomic::create('bool')]));
-                break;
-            case 'integer':
-                $event->setReturnTypeCandidate(new Union([Atomic::create('int')]));
-                break;
-            case 'double':
-                $event->setReturnTypeCandidate(new Union([Atomic::create('float')]));
-                break;
-            case 'array':
-                $event->setReturnTypeCandidate(new Union([Atomic::create('array')]));
-                break;
+        if (null === $parameterTypes || [] === $parameterTypes) {
+            return;
         }
+
+        $event->setReturnTypeCandidate(new Union(array_map(fn (string $parameterType): Atomic => Atomic::create($parameterType), $parameterTypes)));
     }
 }
