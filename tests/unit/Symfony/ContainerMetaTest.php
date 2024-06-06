@@ -117,7 +117,32 @@ class ContainerMetaTest extends TestCase
         ], $this->containerMeta->getParameter('nested_collection'));
     }
 
-    public function testGetParameterP(): void
+    /**
+     * @dataProvider guessParameterTypeProvider
+     */
+    public function testGuessParameterType(?array $expectedTypes, string $parameterName): void
+    {
+        $this->assertSame($expectedTypes, $this->containerMeta->guessParameterType($parameterName));
+    }
+
+    public function guessParameterTypeProvider(): iterable
+    {
+        yield [['string'], 'kernel.environment'];
+        yield [['bool'], 'debug_enabled'];
+        yield [['string'], 'version'];
+        yield [['int'], 'integer_one'];
+        yield [['float'], 'pi'];
+        yield [['array'], 'collection1'];
+        yield [['array'], 'nested_collection'];
+        yield [['bool'], 'env_param_bool'];
+        yield [['string'], 'env_param_string'];
+        yield [null, 'env_param_custom_type'];
+        yield [['array'], 'env_param_json'];
+        yield [['BackedEnum'], 'env_param_enum'];
+        yield [['array'], 'env_param_url'];
+    }
+
+    public function testGetParameterNonExistent(): void
     {
         $this->expectException(ParameterNotFoundException::class);
         $this->containerMeta->getParameter('non_existent');

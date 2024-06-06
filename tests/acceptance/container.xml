@@ -21,6 +21,12 @@
         </parameter>
       </parameter>
     </parameter>
+    <parameter key="env_param_bool">%env(bool:ENV_PARAM)%</parameter>
+    <parameter key="env_param_string">%env(string:ENV_PARAM)%</parameter>
+    <parameter key="env_param_custom_type">%env(custom_type:ENV_PARAM)%</parameter>
+    <parameter key="env_param_json">%env(json:ENV_PARAM)%</parameter>
+    <parameter key="env_param_enum">%env(enum:ENV_PARAM)%</parameter>
+    <parameter key="env_param_url">%env(url:ENV_PARAM)%</parameter>
   </parameters>
   <services>
     <service id="doctrine.orm.entity_manager" alias="doctrine.orm.default_entity_manager" public="true"/>
