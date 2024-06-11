@@ -29,7 +29,7 @@ use Symfony\Component\HttpKernel\Kernel;
  */
 class Plugin implements PluginEntryPointInterface
 {
-    public function __invoke(RegistrationInterface $api, \SimpleXMLElement $config = null): void
+    public function __invoke(RegistrationInterface $registration, ?\SimpleXMLElement $config = null): void
     {
         require_once __DIR__.'/Handler/HeaderBagHandler.php';
         require_once __DIR__.'/Handler/ContainerHandler.php';
@@ -39,13 +39,13 @@ class Plugin implements PluginEntryPointInterface
         require_once __DIR__.'/Handler/DoctrineQueryBuilderHandler.php';
         require_once __DIR__.'/Provider/FormGetErrorsReturnTypeProvider.php';
 
-        $api->registerHooksFromClass(HeaderBagHandler::class);
-        $api->registerHooksFromClass(ConsoleHandler::class);
-        $api->registerHooksFromClass(ContainerDependencyHandler::class);
-        $api->registerHooksFromClass(RequiredSetterHandler::class);
+        $registration->registerHooksFromClass(HeaderBagHandler::class);
+        $registration->registerHooksFromClass(ConsoleHandler::class);
+        $registration->registerHooksFromClass(ContainerDependencyHandler::class);
+        $registration->registerHooksFromClass(RequiredSetterHandler::class);
 
         if (class_exists(\Doctrine\ORM\QueryBuilder::class)) {
-            $api->registerHooksFromClass(DoctrineQueryBuilderHandler::class);
+            $registration->registerHooksFromClass(DoctrineQueryBuilderHandler::class);
         }
 
         if (class_exists(AnnotationRegistry::class)) {
@@ -54,10 +54,10 @@ class Plugin implements PluginEntryPointInterface
                 /** @psalm-suppress DeprecatedMethod */
                 AnnotationRegistry::registerLoader('class_exists');
             }
-            $api->registerHooksFromClass(DoctrineRepositoryHandler::class);
+            $registration->registerHooksFromClass(DoctrineRepositoryHandler::class);
 
             require_once __DIR__.'/Handler/AnnotationHandler.php';
-            $api->registerHooksFromClass(AnnotationHandler::class);
+            $registration->registerHooksFromClass(AnnotationHandler::class);
         }
 
         if (isset($config->containerXml)) {
@@ -83,14 +83,14 @@ class Plugin implements PluginEntryPointInterface
 
             require_once __DIR__.'/Handler/ParameterBagHandler.php';
             ParameterBagHandler::init($containerMeta);
-            $api->registerHooksFromClass(ParameterBagHandler::class);
+            $registration->registerHooksFromClass(ParameterBagHandler::class);
         }
 
-        $api->registerHooksFromClass(ContainerHandler::class);
+        $registration->registerHooksFromClass(ContainerHandler::class);
 
-        $this->addStubs($api, __DIR__.'/Stubs/common');
-        $this->addStubs($api, __DIR__.'/Stubs/'.Kernel::MAJOR_VERSION);
-        $this->addStubs($api, __DIR__.'/Stubs/php');
+        $this->addStubs($registration, __DIR__.'/Stubs/common');
+        $this->addStubs($registration, __DIR__.'/Stubs/'.Kernel::MAJOR_VERSION);
+        $this->addStubs($registration, __DIR__.'/Stubs/php');
 
         if (isset($config->twigCachePath)) {
             $twig_cache_path = getcwd().DIRECTORY_SEPARATOR.ltrim((string) $config->twigCachePath, DIRECTORY_SEPARATOR);
@@ -99,15 +99,15 @@ class Plugin implements PluginEntryPointInterface
             }
 
             require_once __DIR__.'/Twig/CachedTemplatesTainter.php';
-            $api->registerHooksFromClass(CachedTemplatesTainter::class);
+            $registration->registerHooksFromClass(CachedTemplatesTainter::class);
 
             require_once __DIR__.'/Twig/CachedTemplatesMapping.php';
-            $api->registerHooksFromClass(CachedTemplatesMapping::class);
+            $registration->registerHooksFromClass(CachedTemplatesMapping::class);
             CachedTemplatesMapping::setCachePath($twig_cache_path);
         }
 
         require_once __DIR__.'/Twig/AnalyzedTemplatesTainter.php';
-        $api->registerHooksFromClass(AnalyzedTemplatesTainter::class);
+        $registration->registerHooksFromClass(AnalyzedTemplatesTainter::class);
 
         if (isset($config->twigRootPath)) {
             $twig_root_path = trim((string) $config->twigRootPath, DIRECTORY_SEPARATOR);
@@ -119,20 +119,20 @@ class Plugin implements PluginEntryPointInterface
             TemplateFileAnalyzer::setTemplateRootPath($twig_root_path);
         }
 
-        $api->registerHooksFromClass(FormGetErrorsReturnTypeProvider::class);
+        $registration->registerHooksFromClass(FormGetErrorsReturnTypeProvider::class);
     }
 
-    private function addStubs(RegistrationInterface $api, string $path): void
+    private function addStubs(RegistrationInterface $registration, string $path): void
     {
         if (!is_dir($path)) {
-            // e.g. looking for stubs for version 3, but there aren't any at time of writing, so don't try and load them.
+            // e.g., looking for stubs for version 3, but there aren't any at time of writing, so don't try and load them.
             return;
         }
 
         $a = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($path));
         foreach ($a as $file) {
             if (!$file->isDir()) {
-                $api->addStubFile($file->getPathname());
+                $registration->addStubFile($file->getPathname());
             }
         }
     }

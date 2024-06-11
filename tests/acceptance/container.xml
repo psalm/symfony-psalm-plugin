@@ -21,6 +21,12 @@
         </parameter>
       </parameter>
     </parameter>
+    <parameter key="env_param_bool">%env(bool:ENV_PARAM)%</parameter>
+    <parameter key="env_param_string">%env(string:ENV_PARAM)%</parameter>
+    <parameter key="env_param_custom_type">%env(custom_type:ENV_PARAM)%</parameter>
+    <parameter key="env_param_json">%env(json:ENV_PARAM)%</parameter>
+    <parameter key="env_param_enum">%env(enum:ENV_PARAM)%</parameter>
+    <parameter key="env_param_url">%env(url:ENV_PARAM)%</parameter>
   </parameters>
   <services>
     <service id="doctrine.orm.entity_manager" alias="doctrine.orm.default_entity_manager" public="true"/>
@@ -46,7 +52,7 @@
     <service id="dummy_private_service" class="Psalm\SymfonyPsalmPlugin\Tests\Fixture\DummyPrivateService" public="false"/>
     <service id="public_service_wo_public_attr" class="Foo\Bar"/>
     <service id="wronglyNamedService" class="Foo\Bar" public="true" />
-    <!-- service subscriber 1 example -->
+    <!-- service locator example 1 -->
     <service id="App\Controller\DummyController" class="App\Controller\DummyController">
       <tag name="container.service_subscriber"/>
       <argument type="service" id=".service_locator.123xyz.App\Controller\DummyController"/>
@@ -66,7 +72,7 @@
       <argument type="service" id="service_container"/>
       <factory service=".service_locator.123xyz" method="withContext"/>
     </service>
-    <!-- service subscriber 2 example -->
+    <!-- service locator example 2 -->
     <service id="service_subscriber_2" class="App\SomeClass" autowire="true" autoconfigure="true">
       <tag name="container.service_subscriber"/>
       <argument type="service" id=".service_locator.456xyz.service_subscriber_2"/>
@@ -84,7 +90,15 @@
         <argument key="dummy_service_with_locator2" type="service" id="Psalm\SymfonyPsalmPlugin\Tests\Fixture\DummyPrivateService"/>
         <argument key="dummy_service_with_locator3" type="service_closure" id="Psalm\SymfonyPsalmPlugin\Tests\Fixture\DummyPrivateService"/>
         <argument key="validator" type="service" id="debug.validator"/>
+        <argument key="1234" type="service" id="Psalm\SymfonyPsalmPlugin\Tests\Fixture\DummyPrivateService"/>
       </argument>
+    </service>
+    <!-- service locator example 3 -->
+    <service id=".service_locator.890xyz.kernel::registerContainerConfiguration()" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator_context" id="kernel::registerContainerConfiguration()"/>
+      <argument>kernel::registerContainerConfiguration()</argument>
+      <argument type="service" id="service_container"/>
+      <factory service=".service_locator.890xyz" method="withContext"/>
     </service>
   </services>
 </container>

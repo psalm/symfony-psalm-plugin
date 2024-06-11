@@ -2,7 +2,7 @@
 Feature: Header get
 
   Background:
-    Given I have issue handler "UnusedFunctionCall" suppressed
+    Given I have issue handler "UnusedVariable" suppressed
     And I have Symfony plugin enabled
     And I have the following code preamble
       """
@@ -11,24 +11,23 @@ Feature: Header get
       use Symfony\Component\HttpFoundation\Request;
       """
 
-  Scenario: HeaderBag get method return type should return `?string` (unless third argument is provided for < Sf4.4)
+  Scenario: HeaderBag get method return type should return `?string`
     Given I have the following code
       """
       class App
       {
         public function index(Request $request): void
         {
-          $string = $request->headers->get('nullable_string');
-          if (!$string) {
-            return;
-          }
-
-          trim($string);
+          /** @psalm-trace $nullableString */
+          $nullableString = $request->headers->get('nullable_string');
         }
       }
       """
     When I run Psalm
-    Then I see no errors
+    Then I see these errors
+      | Type  | Message                        |
+      | Trace | $nullableString: null\|string  |
+    And I see no other errors
 
   Scenario: HeaderBag get method return type should return `string` if default value is provided with string
     Given I have the following code
@@ -37,11 +36,13 @@ Feature: Header get
       {
         public function index(Request $request): void
         {
+          /** @psalm-trace $string */
           $string = $request->headers->get('string', 'string');
-
-          trim($string);
         }
       }
       """
     When I run Psalm
-    Then I see no errors
+    Then I see these errors
+      | Type  | Message         |
+      | Trace | $string: string |
+    And I see no other errors

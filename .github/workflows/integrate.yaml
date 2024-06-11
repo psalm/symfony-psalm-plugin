@@ -6,7 +6,7 @@ on:
     branches:
       - master
   schedule:
-    - cron: "0 10 * * *"
+    - cron: "0 10 * * 6"
 
 jobs:
   static-code-analysis:
@@ -18,8 +18,8 @@ jobs:
       fail-fast: false
       matrix:
         php-version:
-          - 8.0
           - 8.1
+          - 8.2
 
         dependencies:
           - highest
@@ -27,7 +27,7 @@ jobs:
 
     steps:
       - name: "Checkout"
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: "Install PHP with extensions"
         uses: shivammathur/setup-php@v2
@@ -36,12 +36,12 @@ jobs:
           php-version: ${{ matrix.php-version }}
 
       - name: Install Composer dependencies
-        uses: ramsey/composer-install@v1
+        uses: ramsey/composer-install@v3
         with:
           dependency-versions: ${{ matrix.dependencies }}
 
       - name: "Cache cache directory for vimeo/psalm"
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: .build/psalm
           key: php-${{ matrix.php-version }}-psalm-${{ github.sha }}
@@ -64,26 +64,23 @@ jobs:
       fail-fast: false
       matrix:
         php-version:
-          - 8.0
           - 8.1
           - 8.2
 
         symfony-version:
-          - 5
           - 6
-          - 7
+          - 7.0
+          - 7.1
 
         exclude:
-          - php-version: 8.0
-            symfony-version: 6
-          - php-version: 8.0
-            symfony-version: 7
           - php-version: 8.1
-            symfony-version: 7
+            symfony-version: 7.0
+          - php-version: 8.1
+            symfony-version: 7.1
 
     steps:
       - name: "Checkout"
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: "Install PHP with extensions"
         uses: shivammathur/setup-php@v2
@@ -96,7 +93,7 @@ jobs:
         run: composer config extra.symfony.require ${{ matrix.symfony-version }}.*
 
       - name: Install Composer dependencies
-        uses: ramsey/composer-install@v1
+        uses: ramsey/composer-install@v3
 
       - name: "Run unit tests with phpunit"
         run: vendor/bin/phpunit --configuration=phpunit.xml

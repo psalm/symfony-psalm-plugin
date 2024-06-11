@@ -1,4 +1,4 @@
-@symfony-common
+@symfony-7
 Feature: PropertyAccessorInterface
 
   Background:
@@ -9,6 +9,7 @@ Feature: PropertyAccessorInterface
       <?php
 
       use Symfony\Component\PropertyAccess\PropertyAccess;
+      use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
       $propertyAccessor = PropertyAccess::createPropertyAccessor();
       """
@@ -20,10 +21,13 @@ Feature: PropertyAccessorInterface
 
       $propertyAccessor->setValue($company, 'name', 'Acme v2');
 
-      array_key_exists('name', $company);
+      /** @psalm-trace $company */
       """
     When I run Psalm
-    Then I see no errors
+    Then I see these errors
+      | Type  | Message         |
+      | Trace | $company: array |
+    And I see no other errors
 
   Scenario: Set value keeps object instance if an object is passed
     Given I have the following code
@@ -36,28 +40,26 @@ Feature: PropertyAccessorInterface
 
       $propertyAccessor->setValue($company, 'name', 'Acme v2');
 
-      echo $company->name;
+      /** @psalm-trace $company */
       """
     When I run Psalm
-    Then I see no errors
+    Then I see these errors
+      | Type  | Message           |
+      | Trace | $company: Company |
+    And I see no other errors
 
   Scenario: Set value does not modify the propertyAccessor variable
     Given I have the following code
       """
-      use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
-
       class Company
       {
-          /**
-           * @var PropertyAccessorInterface
-           */
-          private $propertyAccessor;
-
-          public function __construct(PropertyAccessorInterface $propertyAccessor) {
-              $this->propertyAccessor = $propertyAccessor;
+          public function __construct(
+            private PropertyAccessorInterface $propertyAccessor,
+          ) {
           }
 
-          public function doThings(Company $thing): void {
+          public function doThings(Company $thing): void
+          {
               $this->propertyAccessor->setValue($thing, 'foo', 'bar');
               $this->propertyAccessor->setValue($thing, 'foo', 'bar');
           }

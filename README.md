@@ -14,7 +14,7 @@ vendor/bin/psalm-plugin enable psalm/plugin-symfony
 
 | Symfony Psalm Plugin | PHP        | Symfony | Psalm |
 |----------------------|------------|---------|-------|
-| 5.x                  | ^7.4, ^8.0 | 5, 6    | 5     |
+| 5.x                  | ^8.0       | 5, 6, 7 | 5     |
 | 4.x                  | ^7.4, ^8.0 | 4, 5, 6 | 4     |
 | 3.x                  | ^7.1, ^8.0 | 4, 5, 6 | 4     |
 | 2.x                  | ^7.1, ^8.0 | 4, 5    | 4     |
@@ -131,7 +131,7 @@ To leverage the real Twig file analyzer, you have to configure a checker for the
 ```xml
 <fileExtensions>
    <extension name=".php" />
-   <extension name=".twig" checker="./vendor/psalm/plugin-symfony/src/Twig/TemplateFileAnalyzer.php"/>
+   <extension name=".twig" checker="/vendor/psalm/plugin-symfony/src/Twig/TemplateFileAnalyzer.php"/>
 </fileExtensions>
 ```
 

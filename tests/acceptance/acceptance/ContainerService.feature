@@ -4,23 +4,26 @@ Feature: Container service
 
   Background:
     Given I have Symfony plugin enabled
-
-  Scenario: Asserting psalm recognizes return type of service got via 'ContainerInterface::get()'
-    Given I have the following code
+    And I have the following code preamble
       """
       <?php
+
+      use \Symfony\Component\DependencyInjection\ContainerInterface;
+
       class SomeService
       {
         public function do(): void {}
       }
+      """
 
-      class SomeController
+  Scenario: Asserting psalm recognizes return type of service got via 'ContainerInterface::get()'
+    Given I have the following code
+      """
+      class App
       {
-        use \Symfony\Component\DependencyInjection\ContainerAwareTrait;
-
-        public function index(): void
+        public function __invoke(ContainerInterface $container): void
         {
-          $this->container->get(SomeService::class)->do();
+          $container->get(SomeService::class)->do();
         }
       }
       """
@@ -30,19 +33,11 @@ Feature: Container service
   Scenario: Asserting psalm recognizes return type of service got via 'ContainerInterface::get()'.
     Given I have the following code
       """
-      <?php
-      class SomeService
+      class App
       {
-        public function do(): void {}
-      }
-
-      class SomeController
-      {
-        use \Symfony\Component\DependencyInjection\ContainerAwareTrait;
-
-        public function index(): void
+        public function __invoke(ContainerInterface $container): void
         {
-          $this->container->get(SomeService::class)->nosuchmethod();
+          $container->get(SomeService::class)->nosuchmethod();
         }
       }
       """
@@ -55,18 +50,16 @@ Feature: Container service
   Scenario: Container get(self::class) should not crash
     Given I have the following code
       """
-      <?php
-      class SomeController
+      class App
       {
-        use \Symfony\Component\DependencyInjection\ContainerAwareTrait;
-
-        public function index()
+        public function index(ContainerInterface $container): void
         {
-          $this->container->get(self::class)->index();
+          $container->get(self::class)->index();
         }
       }
       """
     When I run Psalm
     Then I see these errors
-      | Type              | Message                                                                  |
-      | MissingReturnType | Method SomeController::index does not have a return type, expecting void |
+      | Type            | Message                                                                          |
+      | MixedMethodCall | Cannot determine the type of the object on the left hand side of this expression |
+    And I see no other errors
