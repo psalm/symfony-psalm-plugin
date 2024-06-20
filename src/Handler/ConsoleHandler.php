@@ -237,7 +237,7 @@ class ConsoleHandler implements AfterMethodCallAnalysisInterface
      */
     private static function normalizeOptionParams(array $args): array
     {
-        return self::normalizeParams(['name', 'shortcut', 'mode', 'description', 'default'], $args);
+        return self::normalizeParams(['name', 'shortcut', 'mode', 'description', 'default', 'suggestedValues'], $args);
     }
 
     /**
@@ -247,7 +247,7 @@ class ConsoleHandler implements AfterMethodCallAnalysisInterface
      */
     private static function normalizeArgumentParams(array $args): array
     {
-        return self::normalizeParams(['name', 'mode', 'description', 'default'], $args);
+        return self::normalizeParams(['name', 'mode', 'description', 'default', 'suggestedValues'], $args);
     }
 
     private static function normalizeParams(array $params, array $args): array
