@@ -297,3 +297,33 @@ Feature: ConsoleOption
       | MixedAssignment | Unable to determine the type that $option is being assigned to |
       | Trace           | $option: mixed                                                 |
     And I see no other errors
+
+  Scenario: Using suggested values for option
+    Given I have the following code
+      """
+      class MyCommand extends Command
+      {
+        public function configure(): void
+        {
+          $this->addOption(
+            'format',
+            null,
+            InputOption::VALUE_OPTIONAL,
+            'The format to use',
+            null,
+            [
+                'pdf',
+                'excel',
+                'csv',
+            ],
+          );
+        }
+
+        public function execute(InputInterface $input, OutputInterface $output): int
+        {
+          return self::SUCCESS;
+        }
+      }
+      """
+    When I run Psalm
+    Then I see no errors

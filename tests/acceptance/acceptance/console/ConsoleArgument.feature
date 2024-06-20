@@ -37,7 +37,17 @@ Feature: ConsoleArgument
       {
         public function configure(): void
         {
-          $this->addArgument('required_string', InputArgument::REQUIRED);
+          $this->addArgument(
+            'required_string',
+            InputArgument::REQUIRED,
+            'description',
+            null,
+            [
+                'string1',
+                'string2',
+                'string3',
+            ]
+          );
           $this->addArgument('required_array', InputArgument::REQUIRED | InputArgument::IS_ARRAY);
         }
 
@@ -278,3 +288,33 @@ Feature: ConsoleArgument
       | Type  | Message            |
       | Trace | $arg: null\|string |
     And I see no other errors
+
+  Scenario: Use suggested values for argument
+    Given I have the following code
+      """
+      class MyCommand extends Command
+      {
+        public function configure(): void
+        {
+          $this->addArgument(
+            'format',
+            InputArgument::OPTIONAL,
+            'The format to use',
+            null,
+            [
+                'pdf',
+                'excel',
+                'csv',
+            ],
+          );
+        }
+
+        public function execute(InputInterface $input, OutputInterface $output): int
+        {
+          return self::SUCCESS;
+        }
+      }
+      """
+    When I run Psalm
+    Then I see no errors
+
