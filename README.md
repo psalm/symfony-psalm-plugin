@@ -114,6 +114,18 @@ If you're getting the following error
 </issueHandlers>
 ```
 
+#### Symfony version
+
+By default, the plugin uses the `Kernel::MAJOR_VERSION` constant to determine your version of Symfony. However, this
+might not be accurate if you have Psalm installed globally. You can set the version explicitly using
+the `symfonyMajorVersion` configuration option:
+
+```xml
+<pluginClass class="Psalm\SymfonyPsalmPlugin\Plugin">
+    <symfonyMajorVersion>6</symfonyMajorVersion>
+</pluginClass>
+```
+
 ### Twig tainting (experimental)
 
 When it comes to taint analysis for Twig templates, there are currently two approaches:

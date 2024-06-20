@@ -89,7 +89,7 @@ class Plugin implements PluginEntryPointInterface
         $registration->registerHooksFromClass(ContainerHandler::class);
 
         $this->addStubs($registration, __DIR__.'/Stubs/common');
-        $this->addStubs($registration, __DIR__.'/Stubs/'.Kernel::MAJOR_VERSION);
+        $this->addStubs($registration, __DIR__.'/Stubs/'.($config->symfonyMajorVersion ?? Kernel::MAJOR_VERSION));
         $this->addStubs($registration, __DIR__.'/Stubs/php');
 
         if (isset($config->twigCachePath)) {
