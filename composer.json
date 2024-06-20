@@ -13,7 +13,7 @@
         "php": "^8.1",
         "ext-simplexml": "*",
         "symfony/framework-bundle": "^5.0 || ^6.0 || ^7.0",
-        "vimeo/psalm": "^5.24"
+        "vimeo/psalm": "^5.16"
     },
     "require-dev": {
         "doctrine/annotations": "^1.8|^2",
