@@ -37,7 +37,17 @@ Feature: ConsoleArgument
       {
         public function configure(): void
         {
-          $this->addArgument('required_string', InputArgument::REQUIRED);
+          $this->addArgument(
+            'required_string',
+            InputArgument::REQUIRED,
+            'description',
+            null,
+            [
+                'string1',
+                'string2',
+                'string3',
+            ]
+          );
           $this->addArgument('required_array', InputArgument::REQUIRED | InputArgument::IS_ARRAY);
         }
 
