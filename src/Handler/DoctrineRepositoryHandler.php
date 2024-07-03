@@ -22,69 +22,73 @@ class DoctrineRepositoryHandler implements AfterMethodCallAnalysisInterface, Aft
 {
     public static function afterMethodCallAnalysis(AfterMethodCallAnalysisEvent $event): void
     {
-        $expr = $event->getExpr();
         $declaring_method_id = $event->getDeclaringMethodId();
-        $statements_source = $event->getStatementsSource();
+        if (!in_array($declaring_method_id, ['Doctrine\ORM\EntityManagerInterface::getrepository', 'Doctrine\Persistence\ObjectManager::getrepository'])) {
+            return;
+        }
 
-        if (in_array($declaring_method_id, ['Doctrine\ORM\EntityManagerInterface::getrepository', 'Doctrine\Persistence\ObjectManager::getrepository'])) {
-            if (!isset($expr->args[0]->value)) {
-                return;
-            }
+        $expr = $event->getExpr();
+        if (!isset($expr->args[0]->value)) {
+            return;
+        }
 
-            $entityName = $expr->args[0]->value;
+        $entityName = $expr->args[0]->value;
+        if (!$entityName instanceof Expr\ClassConstFetch) {
             if ($entityName instanceof String_) {
+                $statements_source = $event->getStatementsSource();
                 IssueBuffer::accepts(
                     new RepositoryStringShortcut(new CodeLocation($statements_source, $entityName)),
                     $statements_source->getSuppressedIssues()
                 );
-            } elseif ($entityName instanceof Expr\ClassConstFetch) {
-                /** @psalm-var class-string|null $className */
-                $className = $entityName->class->getAttribute('resolvedName');
+            }
 
-                if (null === $className) {
-                    return;
-                }
+            return;
+        }
 
-                try {
-                    $reflectionClass = new \ReflectionClass($className);
+        /** @psalm-var class-string|null $className */
+        $className = $entityName->class->getAttribute('resolvedName');
+        if (null === $className) {
+            return;
+        }
 
-                    if (\PHP_VERSION_ID >= 80000 && method_exists(\ReflectionClass::class, 'getAttributes')) {
-                        $entityAttributes = $reflectionClass->getAttributes(EntityAnnotation::class);
+        try {
+            $reflectionClass = new \ReflectionClass($className);
+        } catch (\ReflectionException) {
+            return;
+        }
 
-                        foreach ($entityAttributes as $entityAttribute) {
-                            $arguments = $entityAttribute->getArguments();
+        $entityAttributes = $reflectionClass->getAttributes(EntityAnnotation::class);
+        foreach ($entityAttributes as $entityAttribute) {
+            $arguments = $entityAttribute->getArguments();
 
-                            if (isset($arguments['repositoryClass']) && is_string($arguments['repositoryClass'])) {
-                                $event->setReturnTypeCandidate(new Union([new TNamedObject($arguments['repositoryClass'])]));
-                            }
-                        }
-                    }
+            if (isset($arguments['repositoryClass']) && is_string($arguments['repositoryClass'])) {
+                $event->setReturnTypeCandidate(new Union([new TNamedObject($arguments['repositoryClass'])]));
 
-                    if (class_exists(AnnotationReader::class)) {
-                        $reader = new AnnotationReader();
-                        $entityAnnotation = $reader->getClassAnnotation(
-                            $reflectionClass,
-                            EntityAnnotation::class
-                        );
+                return;
+            }
+        }
 
-                        if ($entityAnnotation instanceof EntityAnnotation && $entityAnnotation->repositoryClass) {
-                            $event->setReturnTypeCandidate(new Union([new TNamedObject($entityAnnotation->repositoryClass)]));
-                        }
-                    }
-                } catch (\ReflectionException $e) {
-                }
+        if (class_exists(AnnotationReader::class)) {
+            $reader = new AnnotationReader();
+            $entityAnnotation = $reader->getClassAnnotation(
+                $reflectionClass,
+                EntityAnnotation::class
+            );
+
+            if ($entityAnnotation instanceof EntityAnnotation && $entityAnnotation->repositoryClass) {
+                $event->setReturnTypeCandidate(new Union([new TNamedObject($entityAnnotation->repositoryClass)]));
             }
         }
     }
 
-    public static function afterClassLikeVisit(AfterClassLikeVisitEvent $event)
+    public static function afterClassLikeVisit(AfterClassLikeVisitEvent $event): void
     {
         $stmt = $event->getStmt();
         $statements_source = $event->getStatementsSource();
         $codebase = $event->getCodebase();
 
         $docblock = $stmt->getDocComment();
-        if ($docblock && false !== strpos((string) $docblock, 'repositoryClass')) {
+        if ($docblock && str_contains((string) $docblock, 'repositoryClass')) {
             try {
                 $parsedComment = DocComment::parsePreservingLength($docblock);
                 if (isset($parsedComment->tags['Entity'])) {
@@ -96,7 +100,7 @@ class DoctrineRepositoryHandler implements AfterMethodCallAnalysisInterface, Aft
                     $codebase->queueClassLikeForScanning($repositoryClassName);
                     $file_storage->referenced_classlikes[strtolower($repositoryClassName)] = $repositoryClassName;
                 }
-            } catch (DocblockParseException $e) {
+            } catch (DocblockParseException) {
             }
         }
     }
