@@ -36,7 +36,6 @@ class Plugin implements PluginEntryPointInterface
         require_once __DIR__.'/Handler/ConsoleHandler.php';
         require_once __DIR__.'/Handler/ContainerDependencyHandler.php';
         require_once __DIR__.'/Handler/RequiredSetterHandler.php';
-        require_once __DIR__.'/Handler/DoctrineQueryBuilderHandler.php';
         require_once __DIR__.'/Provider/FormGetErrorsReturnTypeProvider.php';
 
         $registration->registerHooksFromClass(HeaderBagHandler::class);
@@ -45,16 +44,18 @@ class Plugin implements PluginEntryPointInterface
         $registration->registerHooksFromClass(RequiredSetterHandler::class);
 
         if (class_exists(\Doctrine\ORM\QueryBuilder::class)) {
+            require_once __DIR__.'/Handler/DoctrineQueryBuilderHandler.php';
             $registration->registerHooksFromClass(DoctrineQueryBuilderHandler::class);
+
+            require_once __DIR__.'/Handler/DoctrineRepositoryHandler.php';
+            $registration->registerHooksFromClass(DoctrineRepositoryHandler::class);
         }
 
         if (class_exists(AnnotationRegistry::class)) {
-            require_once __DIR__.'/Handler/DoctrineRepositoryHandler.php';
             if (method_exists(AnnotationRegistry::class, 'registerLoader')) {
                 /** @psalm-suppress DeprecatedMethod */
                 AnnotationRegistry::registerLoader('class_exists');
             }
-            $registration->registerHooksFromClass(DoctrineRepositoryHandler::class);
 
             require_once __DIR__.'/Handler/AnnotationHandler.php';
             $registration->registerHooksFromClass(AnnotationHandler::class);
