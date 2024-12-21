@@ -20,6 +20,7 @@ jobs:
         php-version:
           - 8.1
           - 8.2
+          - 8.3
 
         dependencies:
           - highest
@@ -66,6 +67,7 @@ jobs:
         php-version:
           - 8.1
           - 8.2
+          - 8.3
 
         symfony-version:
           - 6

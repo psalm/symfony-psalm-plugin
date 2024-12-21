@@ -20,17 +20,11 @@ class CachedTemplatesMapping implements AfterCodebasePopulatedInterface
         '\/\* (?<name>@?.+\.twig) \*\/\n'.
         'class (?<class>__TwigTemplate_[a-z0-9]{64}) extends (\\\\Twig\\\\)?Template';
 
-    /**
-     * @var string|null
-     */
-    private static $cachePath;
+    private static ?string $cachePath = null;
 
-    /**
-     * @var CachedTemplatesRegistry|null
-     */
-    private static $cacheRegistry;
+    private static ?CachedTemplatesRegistry $cacheRegistry = null;
 
-    public static function afterCodebasePopulated(AfterCodebasePopulatedEvent $event)
+    public static function afterCodebasePopulated(AfterCodebasePopulatedEvent $event): void
     {
         $codebase = $event->getCodebase();
 
