@@ -1,14 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="5.13.1@086b94371304750d1c673315321a55d15fc59015">
+<files psalm-version="5.26.1@d747f6500b38ac4f7dfc5edbcae6e4b637d7add0">
+  <file src="src/Handler/ContainerHandler.php">
+    <MissingClassConstType>
+      <code><![CDATA[GET_CLASSLIKES = [
+        'Psr\Container\ContainerInterface',
+        'Symfony\Component\DependencyInjection\ContainerInterface',
+        'Symfony\Component\DependencyInjection\Container',
+        'Symfony\Bundle\FrameworkBundle\Controller\AbstractController',
+        'Symfony\Bundle\FrameworkBundle\Controller\ControllerTrait',
+        'Symfony\Bundle\FrameworkBundle\Test\TestContainer',
+    ]]]></code>
+    </MissingClassConstType>
+  </file>
   <file src="src/Plugin.php">
-    <UnusedPsalmSuppress occurrences="1">
-      <code>DeprecatedMethod</code>
+    <UnusedPsalmSuppress>
+      <code><![CDATA[DeprecatedMethod]]></code>
     </UnusedPsalmSuppress>
+  </file>
+  <file src="src/Test/CodeceptionModule.php">
+    <MissingClassConstType>
+      <code><![CDATA[DEFAULT_TWIG_TEMPLATES_DIR = 'templates']]></code>
+    </MissingClassConstType>
+  </file>
+  <file src="src/Twig/CachedTemplatesMapping.php">
+    <MissingClassConstType>
+      <code><![CDATA[CACHED_TEMPLATE_HEADER_PATTERN =
+        'use Twig\\\\Template;\n\n'.
+        '\/\* (?<name>@?.+\.twig) \*\/\n'.
+        'class (?<class>__TwigTemplate_[a-z0-9]{64}) extends (\\\\Twig\\\\)?Template']]></code>
+    </MissingClassConstType>
   </file>
   <file src="src/Twig/Context.php">
     <UnnecessaryVarAnnotation>
-      <code>int</code>
-      <code>string</code>
+      <code><![CDATA[int]]></code>
+      <code><![CDATA[string]]></code>
     </UnnecessaryVarAnnotation>
   </file>
 </files>

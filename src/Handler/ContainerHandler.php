@@ -26,7 +26,6 @@ use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 
 class ContainerHandler implements AfterMethodCallAnalysisInterface, AfterClassLikeVisitInterface, AfterCodebasePopulatedInterface, BeforeAddIssueInterface
 {
-    /** @psalm-suppress MissingClassConstType */
     private const GET_CLASSLIKES = [
         'Psr\Container\ContainerInterface',
         'Symfony\Component\DependencyInjection\ContainerInterface',

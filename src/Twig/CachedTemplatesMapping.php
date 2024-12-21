@@ -13,7 +13,6 @@ use Psalm\Plugin\EventHandler\Event\AfterCodebasePopulatedEvent;
 class CachedTemplatesMapping implements AfterCodebasePopulatedInterface
 {
     /**
-     * @psalm-suppress MissingClassConstType
      * @var string
      */
     public const CACHED_TEMPLATE_HEADER_PATTERN =

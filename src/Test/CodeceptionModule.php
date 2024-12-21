@@ -21,7 +21,6 @@ use Weirdan\Codeception\Psalm\Module;
  */
 class CodeceptionModule extends BaseModule
 {
-    /** @psalm-suppress MissingClassConstType */
     private const DEFAULT_TWIG_TEMPLATES_DIR = 'templates';
 
     private string $twigTemplateDir = self::DEFAULT_TWIG_TEMPLATES_DIR;
