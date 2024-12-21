@@ -2,7 +2,8 @@
 Feature: ConsoleArgument
 
   Background:
-    Given I have Symfony plugin enabled
+    Given I have issue handler "MissingClassConstType" suppressed
+    And I have Symfony plugin enabled
     And I have the following code preamble
       """
       <?php

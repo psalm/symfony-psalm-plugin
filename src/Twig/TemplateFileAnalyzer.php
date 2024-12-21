@@ -35,7 +35,7 @@ class TemplateFileAnalyzer extends FileAnalyzer
 
     public function analyze(
         ?PsalmContext $file_context = null,
-        ?PsalmContext $global_context = null
+        ?PsalmContext $global_context = null,
     ): void {
         $codebase = $this->project_analyzer->getCodebase();
         $taint = $codebase->taint_flow_graph;

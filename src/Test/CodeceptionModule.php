@@ -21,27 +21,19 @@ use Weirdan\Codeception\Psalm\Module;
  */
 class CodeceptionModule extends BaseModule
 {
+    /** @psalm-suppress MissingClassConstType */
     private const DEFAULT_TWIG_TEMPLATES_DIR = 'templates';
 
-    /**
-     * @var string
-     */
-    private $twigTemplateDir = self::DEFAULT_TWIG_TEMPLATES_DIR;
+    private string $twigTemplateDir = self::DEFAULT_TWIG_TEMPLATES_DIR;
 
-    /**
-     * @var FilesystemCache|null
-     */
-    private $twigCache;
+    private ?FilesystemCache $twigCache = null;
 
-    /**
-     * @var string|null
-     */
-    private $lastCachePath;
+    private ?string $lastCachePath = null;
 
     /**
      * @var list<string>
      */
-    private $suppressedIssueHandlers = [];
+    private array $suppressedIssueHandlers = [];
 
     public function _initialize(): void
     {
