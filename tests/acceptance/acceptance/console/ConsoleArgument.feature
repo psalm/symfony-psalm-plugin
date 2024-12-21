@@ -2,7 +2,7 @@
 Feature: ConsoleArgument
 
   Background:
-    Given I have issue handler "MissingClassConstType" suppressed
+    Given I have issue handler "UnusedVariable,MissingClassConstType" suppressed
     And I have Symfony plugin enabled
     And I have the following code preamble
       """
