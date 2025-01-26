@@ -16,9 +16,7 @@
         </ignoreFiles>
     </projectFiles>
     <issueHandlers>
-        <MissingClassConstType>
-            <errorLevel type="suppress">
-        </MissingClassConstType>
+        <MissingClassConstType errorLevel="suppress" />
     </issueHandlers>
 
     <plugins>
