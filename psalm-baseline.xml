@@ -1,36 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="5.26.1@d747f6500b38ac4f7dfc5edbcae6e4b637d7add0">
-  <file src="src/Handler/ContainerHandler.php">
-    <MissingClassConstType>
-      <code><![CDATA[GET_CLASSLIKES = [
-        'Psr\Container\ContainerInterface',
-        'Symfony\Component\DependencyInjection\ContainerInterface',
-        'Symfony\Component\DependencyInjection\Container',
-        'Symfony\Bundle\FrameworkBundle\Controller\AbstractController',
-        'Symfony\Bundle\FrameworkBundle\Controller\ControllerTrait',
-        'Symfony\Bundle\FrameworkBundle\Test\TestContainer',
-    ]]]></code>
-    </MissingClassConstType>
+<files psalm-version="6.x-dev@910af758a30e31c2e20d3811fc6078957ef208b3">
+  <file src="src/Handler/ConsoleHandler.php">
+    <PossiblyNullArrayOffset>
+      <code><![CDATA[$result]]></code>
+    </PossiblyNullArrayOffset>
   </file>
   <file src="src/Plugin.php">
-    <UnusedPsalmSuppress>
-      <code><![CDATA[DeprecatedMethod]]></code>
-    </UnusedPsalmSuppress>
+    <PossiblyFalseOperand>
+      <code><![CDATA[getcwd()]]></code>
+      <code><![CDATA[getcwd()]]></code>
+    </PossiblyFalseOperand>
   </file>
   <file src="src/Test/CodeceptionModule.php">
-    <MissingClassConstType>
-      <code><![CDATA[DEFAULT_TWIG_TEMPLATES_DIR = 'templates']]></code>
-    </MissingClassConstType>
+    <PossiblyFalseArgument>
+      <code><![CDATA[$cacheContent]]></code>
+      <code><![CDATA[$cacheContent]]></code>
+    </PossiblyFalseArgument>
   </file>
-  <file src="src/Twig/CachedTemplatesMapping.php">
-    <MissingClassConstType>
-      <code><![CDATA[CACHED_TEMPLATE_HEADER_PATTERN =
-        'use Twig\\\\Template;\n\n'.
-        '\/\* (?<name>@?.+\.twig) \*\/\n'.
-        'class (?<class>__TwigTemplate_[a-z0-9]{64}) extends (\\\\Twig\\\\)?Template']]></code>
-    </MissingClassConstType>
+  <file src="src/Twig/CachedTemplatesRegistry.php">
+    <InvalidReturnType>
+      <code><![CDATA[\Generator<string>]]></code>
+    </InvalidReturnType>
+    <PossiblyNullArgument>
+      <code><![CDATA[$alternativeNotation]]></code>
+    </PossiblyNullArgument>
   </file>
   <file src="src/Twig/Context.php">
+    <PossiblyFalseArgument>
+      <code><![CDATA[$fileCode]]></code>
+      <code><![CDATA[$fileCode]]></code>
+      <code><![CDATA[$fileCode]]></code>
+    </PossiblyFalseArgument>
     <UnnecessaryVarAnnotation>
       <code><![CDATA[int]]></code>
       <code><![CDATA[string]]></code>
