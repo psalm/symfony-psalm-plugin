@@ -148,7 +148,7 @@ class CodeceptionModule extends BaseModule
         }
 
         $psalmModule->haveTheFollowingConfig(<<<XML
-<?xml version="1.0" findUnusedCode="false" ?>
+<?xml version="1.0" findUnusedCode="false"?>
   <psalm errorLevel="1">
     <projectFiles>
       <directory name="."/>
