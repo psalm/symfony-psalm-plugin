@@ -53,7 +53,6 @@ class Plugin implements PluginEntryPointInterface
 
         if (class_exists(AnnotationRegistry::class)) {
             if (method_exists(AnnotationRegistry::class, 'registerLoader')) {
-                /** @psalm-suppress DeprecatedMethod */
                 AnnotationRegistry::registerLoader('class_exists');
             }
 

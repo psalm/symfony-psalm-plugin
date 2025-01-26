@@ -17,6 +17,7 @@
     </projectFiles>
     <issueHandlers>
         <MissingClassConstType errorLevel="suppress" />
+        <DeprecatedMethod errorLevel="suppress" />
     </issueHandlers>
 
     <plugins>
